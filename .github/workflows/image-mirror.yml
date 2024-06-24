@@ -19,7 +19,7 @@ jobs:
     # 运行条件 => issues 的 label 包含 image-mirror
     # if: contains(github.event.issue.labels.*.name, 'image-mirror')
     concurrency:
-      group: ${{ github.workflow }}-${{ github.ref }}
+      group: ${{ github.workflow }}-${{ github.actor }}
       cancel-in-progress: true
     # 镜像转换任务的步骤列表
     steps:
@@ -65,7 +65,7 @@ jobs:
           issue-number: ${{ github.event.issue.number }}
           body: |
             Syncing image to TargetRegistry, please wait a moment  
-            [Check the progress](https://github.com/imdingtalk/image-mirror/actions/runs/${{ github.run_id }})    
+            [Check the progress](https://github.com/${{ github.repository_owner }}/image-mirror/actions/runs/${{ github.run_id }})    
           reactions: rocket
 
       - name: prepare
@@ -78,8 +78,6 @@ jobs:
         if: steps.check_body.outputs.is_image_format == 'true'
         id: syncImage
         env:
-          DOCKERHUB_USER: ${{ vars.DOCKERHUB_USER }}
-          DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
           TARGET_REGISTRY_PASSWORD: ${{ secrets.TARGET_REGISTRY_PASSWORD }}
           TARGET_REGISTRY_USER: ${{ vars.TARGET_REGISTRY_USER }}
           # TARGET_REGISTRY: index.docker.io
@@ -151,7 +149,7 @@ jobs:
           comment-id: ${{ steps.fc.outputs.comment-id }}
           issue-number: ${{ github.event.issue.number }}
           body: |
-            [Check the progress](https://github.com/imdingtalk/image-mirror/actions/runs/${{ github.run_id }})              
+            [Check the progress](https://github.com/${{ github.repository_owner }}/image-mirror/actions/runs/${{ github.run_id }})              
             ## 镜像信息如下
             - dockerhub-image.yml  
             ```shell
